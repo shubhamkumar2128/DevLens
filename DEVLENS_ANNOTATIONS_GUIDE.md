@@ -1,4 +1,4 @@
-# DevLens Annotations — Technical Reference Guide
+# CodeLens Annotations — Technical Reference Guide
 
 A comprehensive guide to all DevLens annotations: what they do, how to use them, when to use them, and what output to expect.
 

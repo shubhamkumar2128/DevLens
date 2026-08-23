@@ -2,7 +2,7 @@
 
 **Developer Utility Annotation Jar for Java 17+**
 
-DevLens simplifies common development tasks — execution time measurement, method tracing, input/output logging, exception tracking, retry handling, and more — through simple method-level annotations. Add the Spring Boot starter, annotate your methods, and you're done.
+CodeLens simplifies common development tasks — execution time measurement, method tracing, input/output logging, exception tracking, retry handling, and more — through simple method-level annotations. Add the Spring Boot starter, annotate your methods, and you're done.
 
 ## Key Principles
 

@@ -39,6 +39,126 @@ A comprehensive guide to all DevLens annotations: what they do, how to use them,
 
 That's it. Spring Boot auto-configuration handles everything. Just annotate your methods.
 
+### Building the JARs
+
+#### Build all modules (install to local Maven repository)
+
+```bash
+mvn clean install
+```
+
+This compiles and installs all three modules to your local `~/.m2/repository`:
+- `devlens-annotations-1.0.0-SNAPSHOT.jar`
+- `devlens-core-1.0.0-SNAPSHOT.jar`
+- `devlens-spring-boot-starter-1.0.0-SNAPSHOT.jar`
+
+#### Build without running tests
+
+```bash
+mvn clean install -DskipTests
+```
+
+#### Build a specific module only
+
+```bash
+# Build only the annotations module
+mvn clean install -pl devlens-annotations
+
+# Build the starter (and its dependencies)
+mvn clean install -pl devlens-spring-boot-starter -am
+```
+
+The `-am` (also-make) flag builds required dependency modules automatically.
+
+#### Package JARs without installing to local repo
+
+```bash
+mvn clean package
+```
+
+JARs are created in each module's `target/` directory:
+```
+devlens-annotations/target/devlens-annotations-1.0.0-SNAPSHOT.jar
+devlens-core/target/devlens-core-1.0.0-SNAPSHOT.jar
+devlens-spring-boot-starter/target/devlens-spring-boot-starter-1.0.0-SNAPSHOT.jar
+```
+
+### Using the Library in Another Project
+
+After running `mvn clean install`, add the dependency to your Spring Boot application's `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.devlens</groupId>
+    <artifactId>devlens-spring-boot-starter</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+Then run your application as usual:
+
+```bash
+# Using Maven Spring Boot plugin
+mvn spring-boot:run
+
+# Or run the packaged JAR
+java -jar target/your-app-1.0.0.jar
+```
+
+### Running from IDE (IntelliJ / VS Code)
+
+> **Important:** This project is a **library** (multi-module, `<packaging>pom</packaging>` at root). It does NOT have a runnable main class itself. You cannot run it directly.
+>
+> To test the annotations, create a **separate Spring Boot application** that depends on `devlens-spring-boot-starter` and run that application.
+
+#### Steps:
+
+1. Build and install DevLens locally:
+   ```bash
+   mvn clean install -DskipTests
+   ```
+
+2. Create or open your Spring Boot application project
+
+3. Add the DevLens dependency to that project's `pom.xml`:
+   ```xml
+   <dependency>
+       <groupId>com.devlens</groupId>
+       <artifactId>devlens-spring-boot-starter</artifactId>
+       <version>1.0.0-SNAPSHOT</version>
+   </dependency>
+   ```
+
+4. Annotate your methods and run the application:
+   ```java
+   @RestController
+   public class DemoController {
+
+       @GetMapping("/hello")
+       @ExecutionTime
+       @LogInput
+       @LogOutput
+       public String hello(@RequestParam String name) {
+           return "Hello, " + name;
+       }
+   }
+   ```
+
+5. Run `DemoApplication.main()` from IntelliJ or:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+6. Hit the endpoint and check console logs:
+   ```bash
+   curl http://localhost:8080/hello?name=World
+   ```
+   ```
+   [DevLens] LogInput class=DemoController method=hello args=[name=World]
+   [DevLens] ExecutionTime class=DemoController method=hello executionTime=3ms
+   [DevLens] LogOutput class=DemoController method=hello result=Hello, World
+   ```
+
 ### Minimal Example
 
 ```java
